@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculadora CTe</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #eef3f6;
+      --paper: #ffffff;
+      --ink: #17212b;
+      --muted: #667382;
+      --line: #d8e0e7;
+      --soft: #f6f8fa;
+      --blue: #245f96;
+      --blue-soft: #e9f3fb;
+      --green: #24724f;
+      --green-soft: #e9f6ef;
+      --amber: #a46d1f;
+      --shadow: 0 20px 52px rgba(23, 33, 43, .13);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, #f8fafc 0%, var(--page) 56%, #e8edf1 100%);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 32px));
+      margin: 26px auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 0 14px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: #aab8c6;
+      box-shadow: 0 10px 22px rgba(23, 33, 43, .1);
+    }
+
+    .button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .button.copy {
+      width: 100%;
+      border-color: #bdd5ca;
+      background: #f3fbf6;
+      color: #1f6044;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper);
+      box-shadow: var(--shadow);
+      overflow: clip;
+    }
+
+    .panel-head {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .badge {
+      min-height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .form {
+      display: grid;
+      gap: 13px;
+      padding: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      color: #2d3a46;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .input-wrap {
+      min-height: 48px;
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .prefix {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--line);
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      padding: 0 12px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 16px;
+      text-align: right;
+    }
+
+    input:focus {
+      box-shadow: inset 0 0 0 2px rgba(36, 95, 150, .22);
+    }
+
+    .result-panel {
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .result-body {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .cte-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .cte-card {
+      min-height: 250px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      padding: 16px;
+    }
+
+    .cte-card.internal {
+      background: linear-gradient(180deg, var(--green-soft), #fff 54%);
+    }
+
+    .cte-card.export {
+      background: linear-gradient(180deg, var(--blue-soft), #fff 54%);
+    }
+
+    .cte-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cte-name {
+      display: grid;
+      gap: 4px;
+    }
+
+    .eyebrow {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .cte-name strong {
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .status-dot {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      margin-top: 4px;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(36, 114, 79, .12);
+    }
+
+    .export .status-dot {
+      background: var(--blue);
+      box-shadow: 0 0 0 5px rgba(36, 95, 150, .12);
+    }
+
+    .cte-value {
+      margin-top: 4px;
+      font-size: clamp(30px, 3.6vw, 42px);
+      line-height: .98;
+      font-weight: 900;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+      white-space: nowrap;
+    }
+
+    .cte-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+      align-self: start;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mini {
+      min-height: 76px;
+      display: grid;
+      gap: 6px;
+      align-content: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      padding: 13px;
+    }
+
+    .mini span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .mini strong {
+      font-size: 20px;
+      line-height: 1.12;
+      overflow-wrap: anywhere;
+    }
+
+    .notice {
+      display: none;
+      border-left: 4px solid var(--amber);
+      border-radius: 6px;
+      background: #fff6e5;
+      color: #644615;
+      padding: 11px 12px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .invalid .notice {
+      display: block;
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      max-width: min(360px, calc(100% - 32px));
+      padding: 12px 14px;
+      border: 1px solid #c4e2d3;
+      border-radius: var(--radius);
+      background: #f0faf4;
+      color: #24583f;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .16s ease, transform .16s ease;
+      z-index: 10;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .topbar,
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .button.primary {
+        width: max-content;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .app {
+        width: min(100% - 20px, 1120px);
+        margin: 16px auto;
+      }
+
+      .button.primary {
+        width: 100%;
+      }
+
+      .field-row,
+      .cte-grid,
+      .summary-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .cte-card {
+        min-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <h1>Calculadora CTe</h1>
+        <p class="subtitle">Informe os valores e copie o CTe pronto para lançar.</p>
+      </div>
+      <button class="button primary" type="button" id="copySummaryButton">Copiar resumo</button>
+    </header>
+
+    <section class="shell">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2>Dados do cálculo</h2>
+          <span class="badge">Automático</span>
+        </div>
+
+        <form class="form" id="calculatorForm">
+          <div class="field">
+            <label for="internalValue">Interno / plástico</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input id="internalValue" inputmode="decimal" autocomplete="off" value="92.402,71" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="exportValue">Exportação / porcelana</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input id="exportValue" inputmode="decimal" autocomplete="off" value="202.972,03" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="freightValue">Frete + 10% carreteiro</label>
+            <div class="input-wrap">
+              <span class="prefix">R$</span>
+              <input id="freightValue" inputmode="decimal" autocomplete="off" value="7.150,00" />
+            </div>
+          </div>
+        </form>
+      </aside>
+
+      <section class="panel result-panel" id="resultPanel">
+        <div class="panel-head">
+          <h2>Valores para lançar</h2>
+          <span class="badge">Pronto para copiar</span>
+        </div>
+
+        <div class="result-body">
+          <div class="cte-grid">
+            <article class="cte-card internal">
+              <div class="cte-top">
+                <div class="cte-name">
+                  <span class="eyebrow">CTe interno</span>
+                  <strong>Plástico</strong>
+                </div>
+                <span class="status-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cte-value" id="internalIssueValue">R$ 2.236,75</div>
+              <div class="cte-meta" id="internalMeta">Frete rateado: R$ 2.236,75</div>
+              <button class="button copy" type="button" data-copy-target="internalIssue">Copiar interno</button>
+            </article>
+
+            <article class="cte-card export">
+              <div class="cte-top">
+                <div class="cte-name">
+                  <span class="eyebrow">CTe exportação</span>
+                  <strong>Porcelana</strong>
+                </div>
+                <span class="status-dot" aria-hidden="true"></span>
+              </div>
+              <div class="cte-value" id="exportIssueValue">R$ 4.913,25</div>
+              <div class="cte-meta" id="exportMeta">Frete rateado: R$ 4.913,25</div>
+              <button class="button copy" type="button" data-copy-target="exportIssue">Copiar exportação</button>
+            </article>
+          </div>
+
+          <div class="summary-strip">
+            <div class="mini">
+              <span>Total dos CTes</span>
+              <strong id="issueTotal">R$ 7.150,00</strong>
+            </div>
+            <div class="mini">
+              <span>Exportação</span>
+              <strong id="exportPercent">68,72%</strong>
+            </div>
+          </div>
+
+          <div class="notice" id="notice">Informe pelo menos um valor de mercadoria para calcular.</div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast">Copiado.</div>
+
+  <script>
+    const state = {
+      copyValues: {
+        internalIssue: 'R$ 2.236,75',
+        exportIssue: 'R$ 4.913,25'
+      }
+    };
+
+    const fields = {
+      internalValue: document.querySelector('#internalValue'),
+      exportValue: document.querySelector('#exportValue'),
+      freightValue: document.querySelector('#freightValue'),
+      resultPanel: document.querySelector('#resultPanel'),
+      internalIssueValue: document.querySelector('#internalIssueValue'),
+      exportIssueValue: document.querySelector('#exportIssueValue'),
+      internalMeta: document.querySelector('#internalMeta'),
+      exportMeta: document.querySelector('#exportMeta'),
+      issueTotal: document.querySelector('#issueTotal'),
+      exportPercent: document.querySelector('#exportPercent'),
+      notice: document.querySelector('#notice'),
+      toast: document.querySelector('#toast')
+    };
+
+    const currency = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+
+    const decimal = new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    function parseNumber(value) {
+      if (!value) return 0;
+      const clean = String(value)
+        .replace(/[^\d,.-]/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.');
+      const number = Number.parseFloat(clean);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function roundMoney(value) {
+      return Math.round((value + Number.EPSILON) * 100) / 100;
+    }
+
+    function formatCurrency(value) {
+      return currency.format(Number.isFinite(value) ? value : 0);
+    }
+
+    function setText(element, value) {
+      element.textContent = value;
+    }
+
+    function readInputs() {
+      const freight = parseNumber(fields.freightValue.value);
+
+      return {
+        internalValue: parseNumber(fields.internalValue.value),
+        exportValue: parseNumber(fields.exportValue.value),
+        finalFreight: freight
+      };
+    }
+
+    function calculate() {
+      const data = readInputs();
+      const totalGoods = data.internalValue + data.exportValue;
+      const isValid = totalGoods > 0 && data.finalFreight >= 0;
+
+      fields.resultPanel.classList.toggle('invalid', !isValid);
+
+      if (!isValid) {
+        writeEmptyState();
+        return;
+      }
+
+      const exportShare = data.exportValue / totalGoods;
+      const issueTotal = roundMoney(data.finalFreight);
+      const exportIssue = roundMoney(data.finalFreight * exportShare);
+      const internalIssue = roundMoney(issueTotal - exportIssue);
+
+      const values = {
+        internalIssue: formatCurrency(internalIssue),
+        exportIssue: formatCurrency(exportIssue),
+        issueTotal: formatCurrency(issueTotal),
+        exportPercent: `${decimal.format(exportShare * 100)}%`
+      };
+
+      state.copyValues.internalIssue = values.internalIssue;
+      state.copyValues.exportIssue = values.exportIssue;
+
+      setText(fields.internalIssueValue, values.internalIssue);
+      setText(fields.exportIssueValue, values.exportIssue);
+      setText(fields.internalMeta, `Frete rateado: ${values.internalIssue}`);
+      setText(fields.exportMeta, `Frete rateado: ${values.exportIssue}`);
+      setText(fields.issueTotal, values.issueTotal);
+      setText(fields.exportPercent, values.exportPercent);
+    }
+
+    function writeEmptyState() {
+      const empty = formatCurrency(0);
+      state.copyValues.internalIssue = empty;
+      state.copyValues.exportIssue = empty;
+      setText(fields.internalIssueValue, empty);
+      setText(fields.exportIssueValue, empty);
+      setText(fields.internalMeta, 'Frete rateado: R$ 0,00');
+      setText(fields.exportMeta, 'Frete rateado: R$ 0,00');
+      setText(fields.issueTotal, empty);
+      setText(fields.exportPercent, '0,00%');
+    }
+
+    function normalizeMoneyInput(input) {
+      input.value = decimal.format(parseNumber(input.value));
+    }
+
+    function normalizePercentInput(input) {
+      const value = decimal.format(parseNumber(input.value));
+      input.value = value.endsWith(',00') ? value.slice(0, -3) : value;
+    }
+
+    async function writeClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return;
+      }
+
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.setAttribute('readonly', '');
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+
+    async function copyValue(target) {
+      const value = state.copyValues[target] || formatCurrency(0);
+
+      try {
+        await writeClipboard(value);
+        showToast(`Copiado: ${value}`);
+      } catch (error) {
+        showToast('Não foi possível copiar.');
+      }
+    }
+
+    async function copySummary() {
+      const summary = [
+        `CTe interno: ${state.copyValues.internalIssue}`,
+        `CTe exportação: ${state.copyValues.exportIssue}`,
+        `Total dos CTes: ${fields.issueTotal.textContent}`
+      ].join('\n');
+
+      try {
+        await writeClipboard(summary);
+        showToast('Resumo copiado.');
+      } catch (error) {
+        showToast('Não foi possível copiar.');
+      }
+    }
+
+    function showToast(message) {
+      fields.toast.textContent = message;
+      fields.toast.classList.add('show');
+      window.setTimeout(() => fields.toast.classList.remove('show'), 1700);
+    }
+
+    [fields.internalValue, fields.exportValue, fields.freightValue].forEach((input) => {
+      input.addEventListener('input', calculate);
+      input.addEventListener('blur', () => {
+        normalizeMoneyInput(input);
+        calculate();
+      });
+    });
+
+    document.querySelectorAll('[data-copy-target]').forEach((button) => {
+      button.addEventListener('click', () => copyValue(button.dataset.copyTarget));
+    });
+
+    document.querySelector('#copySummaryButton').addEventListener('click', copySummary);
+
+    calculate();
+  </script>
+</body>
+</html>
