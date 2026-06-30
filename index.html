@@ -506,8 +506,8 @@
   <script>
     const state = {
       copyValues: {
-        internalIssue: 'R$ 2.236,75',
-        exportIssue: 'R$ 4.913,25'
+        internalIssue: '2.236,75',
+        exportIssue: '4.913,25'
       }
     };
 
@@ -554,6 +554,14 @@
       return currency.format(Number.isFinite(value) ? value : 0);
     }
 
+    function formatCopyValue(value) {
+      return decimal.format(Number.isFinite(value) ? value : 0);
+    }
+
+    function cleanCurrencyText(value) {
+      return String(value).replace(/\u00a0/g, ' ').replace(/^R\$\s*/, '').trim();
+    }
+
     function setText(element, value) {
       element.textContent = value;
     }
@@ -587,13 +595,15 @@
 
       const values = {
         internalIssue: formatCurrency(internalIssue),
+        internalIssueCopy: formatCopyValue(internalIssue),
         exportIssue: formatCurrency(exportIssue),
+        exportIssueCopy: formatCopyValue(exportIssue),
         issueTotal: formatCurrency(issueTotal),
         exportPercent: `${decimal.format(exportShare * 100)}%`
       };
 
-      state.copyValues.internalIssue = values.internalIssue;
-      state.copyValues.exportIssue = values.exportIssue;
+      state.copyValues.internalIssue = values.internalIssueCopy;
+      state.copyValues.exportIssue = values.exportIssueCopy;
 
       setText(fields.internalIssueValue, values.internalIssue);
       setText(fields.exportIssueValue, values.exportIssue);
@@ -605,8 +615,8 @@
 
     function writeEmptyState() {
       const empty = formatCurrency(0);
-      state.copyValues.internalIssue = empty;
-      state.copyValues.exportIssue = empty;
+      state.copyValues.internalIssue = formatCopyValue(0);
+      state.copyValues.exportIssue = formatCopyValue(0);
       setText(fields.internalIssueValue, empty);
       setText(fields.exportIssueValue, empty);
       setText(fields.internalMeta, 'Frete rateado: R$ 0,00');
@@ -642,7 +652,7 @@
     }
 
     async function copyValue(target) {
-      const value = state.copyValues[target] || formatCurrency(0);
+      const value = state.copyValues[target] || formatCopyValue(0);
 
       try {
         await writeClipboard(value);
@@ -656,7 +666,7 @@
       const summary = [
         `CTe interno: ${state.copyValues.internalIssue}`,
         `CTe exportação: ${state.copyValues.exportIssue}`,
-        `Total dos CTes: ${fields.issueTotal.textContent}`
+        `Total dos CTes: ${cleanCurrencyText(fields.issueTotal.textContent)}`
       ].join('\n');
 
       try {
