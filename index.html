@@ -7,18 +7,20 @@
   <style>
     :root {
       color-scheme: light;
-      --page: #eef3f6;
-      --paper: #ffffff;
-      --ink: #17212b;
-      --muted: #667382;
-      --line: #d8e0e7;
-      --soft: #f6f8fa;
-      --blue: #245f96;
-      --blue-soft: #e9f3fb;
-      --green: #24724f;
-      --green-soft: #e9f6ef;
-      --amber: #a46d1f;
-      --shadow: 0 20px 52px rgba(23, 33, 43, .13);
+      --bg: #f3f6f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafb;
+      --ink: #15202b;
+      --muted: #657487;
+      --line: #dbe3ea;
+      --navy: #173a5e;
+      --navy-2: #245f96;
+      --green: #27735a;
+      --green-soft: #edf7f2;
+      --blue: #266ba8;
+      --blue-soft: #edf5fc;
+      --amber: #aa741f;
+      --shadow: 0 24px 70px rgba(21, 32, 43, .13);
       --radius: 8px;
     }
 
@@ -29,10 +31,10 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: Inter, Segoe UI, Arial, Helvetica, sans-serif;
       color: var(--ink);
       background:
-        linear-gradient(180deg, #f8fafc 0%, var(--page) 56%, #e8edf1 100%);
+        linear-gradient(180deg, #fbfcfd 0%, var(--bg) 46%, #e8eef3 100%);
     }
 
     button,
@@ -40,32 +42,36 @@
       font: inherit;
     }
 
-    .app {
-      width: min(1120px, calc(100% - 32px));
-      margin: 26px auto;
-      display: grid;
-      gap: 16px;
+    .page {
+      width: min(1160px, calc(100% - 32px));
+      margin: 28px auto;
     }
 
     .topbar {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 14px;
-      align-items: end;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
     }
 
-    h1 {
+    .brand {
+      display: grid;
+      gap: 5px;
+    }
+
+    .brand h1 {
       margin: 0;
       font-size: clamp(28px, 4vw, 42px);
-      line-height: 1.04;
+      line-height: 1;
       letter-spacing: 0;
     }
 
-    .subtitle {
-      margin: 7px 0 0;
+    .brand p {
+      margin: 0;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
     .button {
@@ -73,67 +79,70 @@
       border: 1px solid var(--line);
       border-radius: 7px;
       padding: 0 14px;
-      background: #fff;
       color: var(--ink);
+      background: #fff;
       cursor: pointer;
       font-weight: 800;
       white-space: nowrap;
-      transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease, background .16s ease;
     }
 
     .button:hover {
       transform: translateY(-1px);
-      border-color: #aab8c6;
-      box-shadow: 0 10px 22px rgba(23, 33, 43, .1);
+      border-color: #b2c0cc;
+      box-shadow: 0 12px 24px rgba(21, 32, 43, .11);
     }
 
     .button.primary {
-      border-color: var(--blue);
-      background: var(--blue);
+      border-color: var(--navy);
+      background: var(--navy);
       color: #fff;
     }
 
     .button.copy {
       width: 100%;
-      border-color: #bdd5ca;
-      background: #f3fbf6;
-      color: #1f6044;
+      border-color: transparent;
+      background: var(--navy);
+      color: #fff;
     }
 
-    .shell {
+    .button.copy.secondary {
+      background: #1f6f55;
+    }
+
+    .workspace {
       display: grid;
-      grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .panel {
+      grid-template-columns: minmax(310px, 360px) minmax(0, 1fr);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--paper);
+      background: var(--surface);
       box-shadow: var(--shadow);
-      overflow: clip;
+      overflow: hidden;
     }
 
-    .panel-head {
-      min-height: 58px;
+    .inputs {
+      background: #fbfcfd;
+      border-right: 1px solid var(--line);
+    }
+
+    .section-head {
+      min-height: 62px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 14px 16px;
+      padding: 17px 18px;
       border-bottom: 1px solid var(--line);
-      background: #fbfcfd;
     }
 
-    .panel-head h2 {
+    .section-head h2 {
       margin: 0;
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.2;
-      letter-spacing: 0;
+      letter-spacing: .01em;
     }
 
-    .badge {
+    .chip {
       min-height: 26px;
       display: inline-flex;
       align-items: center;
@@ -141,8 +150,8 @@
       padding: 0 9px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: #fff;
       color: var(--muted);
+      background: #fff;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
@@ -150,35 +159,35 @@
 
     .form {
       display: grid;
-      gap: 13px;
-      padding: 16px;
+      gap: 14px;
+      padding: 18px;
     }
 
     .field {
       display: grid;
-      gap: 6px;
+      gap: 7px;
     }
 
     .field-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     label {
-      color: #2d3a46;
+      color: #2f3c49;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     .input-wrap {
       min-height: 48px;
       display: grid;
-      grid-template-columns: 46px minmax(0, 1fr);
+      grid-template-columns: 48px minmax(0, 1fr);
+      overflow: hidden;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background: #fff;
-      overflow: hidden;
     }
 
     .prefix {
@@ -186,10 +195,10 @@
       align-items: center;
       justify-content: center;
       border-right: 1px solid var(--line);
-      background: var(--soft);
       color: var(--muted);
+      background: #f2f5f7;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 850;
     }
 
     input {
@@ -197,149 +206,161 @@
       min-width: 0;
       border: 0;
       outline: 0;
-      padding: 0 12px;
-      background: transparent;
+      padding: 0 13px;
       color: var(--ink);
+      background: transparent;
       font-size: 16px;
       text-align: right;
     }
 
     input:focus {
-      box-shadow: inset 0 0 0 2px rgba(36, 95, 150, .22);
+      box-shadow: inset 0 0 0 2px rgba(36, 95, 150, .2);
     }
 
-    .result-panel {
+    .results {
       display: grid;
       grid-template-rows: auto 1fr;
+      min-width: 0;
     }
 
-    .result-body {
-      padding: 16px;
+    .results-body {
       display: grid;
       gap: 14px;
+      padding: 18px;
       align-content: start;
     }
 
-    .cte-grid {
+    .result-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
-    .cte-card {
-      min-height: 250px;
+    .result-card {
       display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 220px);
+      gap: 16px;
+      align-items: center;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: #fff;
       padding: 16px;
+      background: #fff;
     }
 
-    .cte-card.internal {
-      background: linear-gradient(180deg, var(--green-soft), #fff 54%);
+    .result-card.internal {
+      background:
+        linear-gradient(90deg, var(--green-soft), rgba(255, 255, 255, .92) 45%, #fff 100%);
     }
 
-    .cte-card.export {
-      background: linear-gradient(180deg, var(--blue-soft), #fff 54%);
+    .result-card.export {
+      background:
+        linear-gradient(90deg, var(--blue-soft), rgba(255, 255, 255, .92) 45%, #fff 100%);
     }
 
-    .cte-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+    .result-main {
+      min-width: 0;
+      display: grid;
       gap: 10px;
     }
 
-    .cte-name {
-      display: grid;
-      gap: 4px;
+    .result-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
     }
 
-    .eyebrow {
+    .dot {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(39, 115, 90, .12);
+    }
+
+    .export .dot {
+      background: var(--blue);
+      box-shadow: 0 0 0 5px rgba(38, 107, 168, .12);
+    }
+
+    .result-title span {
       color: var(--muted);
       font-size: 12px;
       font-weight: 900;
-      letter-spacing: .03em;
+      letter-spacing: .04em;
       text-transform: uppercase;
     }
 
-    .cte-name strong {
-      font-size: 18px;
-      line-height: 1.15;
+    .result-title strong {
+      font-size: 16px;
+      line-height: 1.2;
     }
 
-    .status-dot {
-      width: 12px;
-      height: 12px;
-      flex: 0 0 auto;
-      border-radius: 50%;
-      margin-top: 4px;
-      background: var(--green);
-      box-shadow: 0 0 0 5px rgba(36, 114, 79, .12);
-    }
-
-    .export .status-dot {
-      background: var(--blue);
-      box-shadow: 0 0 0 5px rgba(36, 95, 150, .12);
-    }
-
-    .cte-value {
-      margin-top: 4px;
-      font-size: clamp(30px, 3.6vw, 42px);
-      line-height: .98;
-      font-weight: 900;
+    .amount {
+      font-size: clamp(34px, 4.2vw, 54px);
+      line-height: .95;
+      font-weight: 950;
       letter-spacing: 0;
-      overflow-wrap: anywhere;
       white-space: nowrap;
     }
 
-    .cte-meta {
+    .meta {
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.4;
-      align-self: start;
+      line-height: 1.35;
     }
 
-    .summary-strip {
+    .copy-panel {
+      display: grid;
+      gap: 8px;
+      align-content: center;
+    }
+
+    .copy-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+    }
+
+    .summary {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 12px;
     }
 
-    .mini {
-      min-height: 76px;
+    .metric {
       display: grid;
       gap: 6px;
+      min-height: 76px;
       align-content: center;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: #fbfcfd;
-      padding: 13px;
+      background: var(--surface-soft);
+      padding: 13px 14px;
     }
 
-    .mini span {
+    .metric span {
       color: var(--muted);
       font-size: 12px;
       font-weight: 900;
-      letter-spacing: .03em;
+      letter-spacing: .04em;
       text-transform: uppercase;
     }
 
-    .mini strong {
-      font-size: 20px;
-      line-height: 1.12;
-      overflow-wrap: anywhere;
+    .metric strong {
+      font-size: 22px;
+      line-height: 1.08;
+      white-space: nowrap;
     }
 
     .notice {
       display: none;
       border-left: 4px solid var(--amber);
       border-radius: 6px;
-      background: #fff6e5;
-      color: #644615;
       padding: 11px 12px;
+      color: #684718;
+      background: #fff6e5;
       font-size: 13px;
       line-height: 1.4;
     }
@@ -356,8 +377,8 @@
       padding: 12px 14px;
       border: 1px solid #c4e2d3;
       border-radius: var(--radius);
-      background: #f0faf4;
       color: #24583f;
+      background: #f0faf4;
       box-shadow: var(--shadow);
       font-size: 13px;
       opacity: 0;
@@ -372,54 +393,90 @@
       transform: translateY(0);
     }
 
-    @media (max-width: 900px) {
-      .topbar,
-      .shell {
+    @media (min-width: 1180px) {
+      .field-row {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 940px) {
+      .topbar,
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .inputs {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
       }
 
       .button.primary {
         width: max-content;
       }
+
+      .form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .field-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 680px) {
-      .app {
-        width: min(100% - 20px, 1120px);
+      .page {
+        width: min(100% - 20px, 1160px);
         margin: 16px auto;
       }
 
-      .button.primary {
+      .button.primary,
+      .button.copy {
         width: 100%;
       }
 
+      .form,
       .field-row,
-      .cte-grid,
-      .summary-strip {
+      .summary {
         grid-template-columns: 1fr;
       }
 
-      .cte-card {
-        min-height: 220px;
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .result-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 15px;
+      }
+
+      .amount {
+        font-size: clamp(34px, 11vw, 45px);
+      }
+
+      .copy-label {
+        text-align: left;
       }
     }
   </style>
 </head>
 <body>
-  <main class="app">
+  <main class="page">
     <header class="topbar">
-      <div>
+      <div class="brand">
         <h1>Calculadora CTe</h1>
-        <p class="subtitle">Informe os valores e copie o CTe pronto para lançar.</p>
+        <p>Rateio de frete entre mercado interno e exportação.</p>
       </div>
       <button class="button primary" type="button" id="copySummaryButton">Copiar resumo</button>
     </header>
 
-    <section class="shell">
-      <aside class="panel">
-        <div class="panel-head">
+    <section class="workspace">
+      <aside class="inputs">
+        <div class="section-head">
           <h2>Dados do cálculo</h2>
-          <span class="badge">Automático</span>
+          <span class="chip">Frete final</span>
         </div>
 
         <form class="form" id="calculatorForm">
@@ -449,47 +506,53 @@
         </form>
       </aside>
 
-      <section class="panel result-panel" id="resultPanel">
-        <div class="panel-head">
+      <section class="results" id="resultPanel">
+        <div class="section-head">
           <h2>Valores para lançar</h2>
-          <span class="badge">Pronto para copiar</span>
+          <span class="chip">Pronto para copiar</span>
         </div>
 
-        <div class="result-body">
-          <div class="cte-grid">
-            <article class="cte-card internal">
-              <div class="cte-top">
-                <div class="cte-name">
-                  <span class="eyebrow">CTe interno</span>
+        <div class="results-body">
+          <div class="result-list">
+            <article class="result-card internal">
+              <div class="result-main">
+                <div class="result-title">
+                  <span class="dot" aria-hidden="true"></span>
+                  <span>CTe interno</span>
                   <strong>Plástico</strong>
                 </div>
-                <span class="status-dot" aria-hidden="true"></span>
+                <div class="amount" id="internalIssueValue">R$ 2.236,75</div>
+                <div class="meta" id="internalMeta">Frete rateado: R$ 2.236,75</div>
               </div>
-              <div class="cte-value" id="internalIssueValue">R$ 2.236,75</div>
-              <div class="cte-meta" id="internalMeta">Frete rateado: R$ 2.236,75</div>
-              <button class="button copy" type="button" data-copy-target="internalIssue">Copiar interno</button>
+              <div class="copy-panel">
+                <span class="copy-label">Copia somente o número</span>
+                <button class="button copy secondary" type="button" data-copy-target="internalIssue">Copiar interno</button>
+              </div>
             </article>
 
-            <article class="cte-card export">
-              <div class="cte-top">
-                <div class="cte-name">
-                  <span class="eyebrow">CTe exportação</span>
+            <article class="result-card export">
+              <div class="result-main">
+                <div class="result-title">
+                  <span class="dot" aria-hidden="true"></span>
+                  <span>CTe exportação</span>
                   <strong>Porcelana</strong>
                 </div>
-                <span class="status-dot" aria-hidden="true"></span>
+                <div class="amount" id="exportIssueValue">R$ 4.913,25</div>
+                <div class="meta" id="exportMeta">Frete rateado: R$ 4.913,25</div>
               </div>
-              <div class="cte-value" id="exportIssueValue">R$ 4.913,25</div>
-              <div class="cte-meta" id="exportMeta">Frete rateado: R$ 4.913,25</div>
-              <button class="button copy" type="button" data-copy-target="exportIssue">Copiar exportação</button>
+              <div class="copy-panel">
+                <span class="copy-label">Copia somente o número</span>
+                <button class="button copy" type="button" data-copy-target="exportIssue">Copiar exportação</button>
+              </div>
             </article>
           </div>
 
-          <div class="summary-strip">
-            <div class="mini">
+          <div class="summary">
+            <div class="metric">
               <span>Total dos CTes</span>
               <strong id="issueTotal">R$ 7.150,00</strong>
             </div>
-            <div class="mini">
+            <div class="metric">
               <span>Exportação</span>
               <strong id="exportPercent">68,72%</strong>
             </div>
@@ -567,12 +630,10 @@
     }
 
     function readInputs() {
-      const freight = parseNumber(fields.freightValue.value);
-
       return {
         internalValue: parseNumber(fields.internalValue.value),
         exportValue: parseNumber(fields.exportValue.value),
-        finalFreight: freight
+        finalFreight: parseNumber(fields.freightValue.value)
       };
     }
 
@@ -627,11 +688,6 @@
 
     function normalizeMoneyInput(input) {
       input.value = decimal.format(parseNumber(input.value));
-    }
-
-    function normalizePercentInput(input) {
-      const value = decimal.format(parseNumber(input.value));
-      input.value = value.endsWith(',00') ? value.slice(0, -3) : value;
     }
 
     async function writeClipboard(text) {
