@@ -500,7 +500,7 @@
             <label for="freightValue">Frete + 10% carreteiro</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input id="freightValue" inputmode="decimal" autocomplete="off" value="28.050,00" />
+              <input id="freightValue" inputmode="decimal" autocomplete="off" value="25.500,00" />
             </div>
           </div>
         </form>
@@ -568,6 +568,7 @@
 
   <script>
     const EMISSION_FACTOR = 1.12;
+    const CARRIER_FACTOR = 1.10;
 
     const state = {
       copyValues: {
@@ -635,14 +636,14 @@
       return {
         internalValue: parseNumber(fields.internalValue.value),
         exportValue: parseNumber(fields.exportValue.value),
-        finalFreight: parseNumber(fields.freightValue.value)
+        baseFreight: parseNumber(fields.freightValue.value)
       };
     }
 
     function calculate() {
       const data = readInputs();
       const totalGoods = data.internalValue + data.exportValue;
-      const isValid = totalGoods > 0 && data.finalFreight >= 0;
+      const isValid = totalGoods > 0 && data.baseFreight >= 0;
 
       fields.resultPanel.classList.toggle('invalid', !isValid);
 
@@ -653,8 +654,9 @@
 
       const exportShare = data.exportValue / totalGoods;
       const internalShare = data.internalValue / totalGoods;
-      const copyTotal = roundMoney(data.finalFreight);
-      const exportCopy = roundMoney(data.finalFreight * exportShare);
+      const finalFreight = roundMoney(data.baseFreight * CARRIER_FACTOR);
+      const copyTotal = roundMoney(finalFreight);
+      const exportCopy = roundMoney(finalFreight * exportShare);
       const internalCopy = roundMoney(copyTotal - exportCopy);
       const issueTotal = roundMoney(copyTotal * EMISSION_FACTOR);
       const exportIssue = roundMoney(exportCopy * EMISSION_FACTOR);
