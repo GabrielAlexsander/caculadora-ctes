@@ -476,7 +476,7 @@
       <aside class="inputs">
         <div class="section-head">
           <h2>Dados do cálculo</h2>
-          <span class="chip">Frete final</span>
+          <span class="chip">Frete base</span>
         </div>
 
         <form class="form" id="calculatorForm">
@@ -497,10 +497,10 @@
           </div>
 
           <div class="field">
-            <label for="freightValue">Frete + 10% carreteiro</label>
+            <label for="freightValue">Frete</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input id="freightValue" inputmode="decimal" autocomplete="off" value="7.150,00" />
+              <input id="freightValue" inputmode="decimal" autocomplete="off" value="6.500,00" />
             </div>
           </div>
         </form>
@@ -522,7 +522,7 @@
                   <strong>Plástico</strong>
                 </div>
                 <div class="amount" id="internalIssueValue">R$ 2.505,16</div>
-                <div class="meta" id="internalMeta">Valor para copiar: 2.236,75</div>
+                <div class="meta" id="internalMeta">Valor para copiar: 2.236,75 - Plástico: 31,28%</div>
               </div>
               <div class="copy-panel">
                 <span class="copy-label">Copia somente o número</span>
@@ -538,7 +538,7 @@
                   <strong>Porcelana</strong>
                 </div>
                 <div class="amount" id="exportIssueValue">R$ 5.502,84</div>
-                <div class="meta" id="exportMeta">Valor para copiar: 4.913,25</div>
+                <div class="meta" id="exportMeta">Valor para copiar: 4.913,25 - Porcelana: 68,72%</div>
               </div>
               <div class="copy-panel">
                 <span class="copy-label">Copia somente o número</span>
@@ -553,7 +553,7 @@
               <strong id="issueTotal">R$ 8.008,00</strong>
             </div>
             <div class="metric">
-              <span>Total para copiar</span>
+              <span>Frete + 10%</span>
               <strong id="copyTotal">7.150,00</strong>
             </div>
           </div>
@@ -567,6 +567,7 @@
   <div class="toast" id="toast">Copiado.</div>
 
   <script>
+    const CARRIER_FACTOR = 1.10;
     const EMISSION_FACTOR = 1.12;
 
     const state = {
@@ -635,7 +636,7 @@
       return {
         internalValue: parseNumber(fields.internalValue.value),
         exportValue: parseNumber(fields.exportValue.value),
-        finalFreight: parseNumber(fields.freightValue.value)
+        finalFreight: parseNumber(fields.freightValue.value) * CARRIER_FACTOR
       };
     }
 
@@ -652,6 +653,7 @@
       }
 
       const exportShare = data.exportValue / totalGoods;
+      const internalShare = data.internalValue / totalGoods;
       const copyTotal = roundMoney(data.finalFreight);
       const exportCopy = roundMoney(data.finalFreight * exportShare);
       const internalCopy = roundMoney(copyTotal - exportCopy);
@@ -665,7 +667,9 @@
         exportIssue: formatCurrency(exportIssue),
         exportIssueCopy: formatCopyValue(exportCopy),
         issueTotal: formatCurrency(issueTotal),
-        copyTotal: formatCopyValue(copyTotal)
+        copyTotal: formatCopyValue(copyTotal),
+        internalPercent: `${decimal.format(internalShare * 100)}%`,
+        exportPercent: `${decimal.format(exportShare * 100)}%`
       };
 
       state.copyValues.internalIssue = values.internalIssueCopy;
@@ -673,8 +677,8 @@
 
       setText(fields.internalIssueValue, values.internalIssue);
       setText(fields.exportIssueValue, values.exportIssue);
-      setText(fields.internalMeta, `Valor para copiar: ${values.internalIssueCopy}`);
-      setText(fields.exportMeta, `Valor para copiar: ${values.exportIssueCopy}`);
+      setText(fields.internalMeta, `Valor para copiar: ${values.internalIssueCopy} - Plástico: ${values.internalPercent}`);
+      setText(fields.exportMeta, `Valor para copiar: ${values.exportIssueCopy} - Porcelana: ${values.exportPercent}`);
       setText(fields.issueTotal, values.issueTotal);
       setText(fields.copyTotal, values.copyTotal);
     }
@@ -685,8 +689,8 @@
       state.copyValues.exportIssue = formatCopyValue(0);
       setText(fields.internalIssueValue, empty);
       setText(fields.exportIssueValue, empty);
-      setText(fields.internalMeta, 'Valor para copiar: 0,00');
-      setText(fields.exportMeta, 'Valor para copiar: 0,00');
+      setText(fields.internalMeta, 'Valor para copiar: 0,00 - Plástico: 0,00%');
+      setText(fields.exportMeta, 'Valor para copiar: 0,00 - Porcelana: 0,00%');
       setText(fields.issueTotal, empty);
       setText(fields.copyTotal, '0,00');
     }
@@ -727,7 +731,7 @@
       const summary = [
         `CTe interno: ${state.copyValues.internalIssue}`,
         `CTe exportação: ${state.copyValues.exportIssue}`,
-        `Total para copiar: ${fields.copyTotal.textContent}`,
+        `Frete + 10%: ${fields.copyTotal.textContent}`,
         `Total com 12%: ${cleanCurrencyText(fields.issueTotal.textContent)}`
       ].join('\n');
 
