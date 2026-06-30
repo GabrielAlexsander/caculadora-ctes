@@ -476,7 +476,7 @@
       <aside class="inputs">
         <div class="section-head">
           <h2>Dados do cálculo</h2>
-          <span class="chip">Frete base</span>
+          <span class="chip">Frete +10%</span>
         </div>
 
         <form class="form" id="calculatorForm">
@@ -484,7 +484,7 @@
             <label for="internalValue">Interno / plástico</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input id="internalValue" inputmode="decimal" autocomplete="off" value="92.402,71" />
+              <input id="internalValue" inputmode="decimal" autocomplete="off" value="171.996,45" />
             </div>
           </div>
 
@@ -492,15 +492,15 @@
             <label for="exportValue">Exportação / porcelana</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input id="exportValue" inputmode="decimal" autocomplete="off" value="202.972,03" />
+              <input id="exportValue" inputmode="decimal" autocomplete="off" value="11.307,83" />
             </div>
           </div>
 
           <div class="field">
-            <label for="freightValue">Frete</label>
+            <label for="freightValue">Frete + 10% carreteiro</label>
             <div class="input-wrap">
               <span class="prefix">R$</span>
-              <input id="freightValue" inputmode="decimal" autocomplete="off" value="6.500,00" />
+              <input id="freightValue" inputmode="decimal" autocomplete="off" value="28.050,00" />
             </div>
           </div>
         </form>
@@ -521,8 +521,8 @@
                   <span>CTe interno</span>
                   <strong>Plástico</strong>
                 </div>
-                <div class="amount" id="internalIssueValue">R$ 2.505,16</div>
-                <div class="meta" id="internalMeta">Valor para copiar: 2.236,75 - Plástico: 31,28%</div>
+                <div class="amount" id="internalIssueValue">R$ 29.477,99</div>
+                <div class="meta" id="internalMeta">Valor para copiar: 26.319,63 - Plástico: 93,83%</div>
               </div>
               <div class="copy-panel">
                 <span class="copy-label">Copia somente o número</span>
@@ -537,8 +537,8 @@
                   <span>CTe exportação</span>
                   <strong>Porcelana</strong>
                 </div>
-                <div class="amount" id="exportIssueValue">R$ 5.502,84</div>
-                <div class="meta" id="exportMeta">Valor para copiar: 4.913,25 - Porcelana: 68,72%</div>
+                <div class="amount" id="exportIssueValue">R$ 1.938,01</div>
+                <div class="meta" id="exportMeta">Valor para copiar: 1.730,37 - Porcelana: 6,17%</div>
               </div>
               <div class="copy-panel">
                 <span class="copy-label">Copia somente o número</span>
@@ -550,11 +550,11 @@
           <div class="summary">
             <div class="metric">
               <span>Total com 12%</span>
-              <strong id="issueTotal">R$ 8.008,00</strong>
+              <strong id="issueTotal">R$ 31.416,00</strong>
             </div>
             <div class="metric">
               <span>Frete + 10%</span>
-              <strong id="copyTotal">7.150,00</strong>
+              <strong id="copyTotal">28.050,00</strong>
             </div>
           </div>
 
@@ -567,13 +567,12 @@
   <div class="toast" id="toast">Copiado.</div>
 
   <script>
-    const CARRIER_FACTOR = 1.10;
     const EMISSION_FACTOR = 1.12;
 
     const state = {
       copyValues: {
-        internalIssue: '2.236,75',
-        exportIssue: '4.913,25'
+        internalIssue: '26.319,63',
+        exportIssue: '1.730,37'
       }
     };
 
@@ -636,7 +635,7 @@
       return {
         internalValue: parseNumber(fields.internalValue.value),
         exportValue: parseNumber(fields.exportValue.value),
-        finalFreight: parseNumber(fields.freightValue.value) * CARRIER_FACTOR
+        finalFreight: parseNumber(fields.freightValue.value)
       };
     }
 
